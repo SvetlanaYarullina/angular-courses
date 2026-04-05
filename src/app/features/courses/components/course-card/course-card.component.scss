@@ -1,0 +1,71 @@
+.course-card {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    background: #EFF6FF;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__title {
+        margin-bottom: 1rem;
+    }
+
+    &__info-wrapper {
+        display: flex;
+    }
+
+    &__description {
+        max-width: 80%;
+    }
+
+    &__info {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__info-item {
+        display: flex;
+        align-items: center;
+
+        &:first-child {
+            margin-right: 1rem;
+        }
+    }
+
+    &__actions {
+        display: flex;
+    }
+
+    &__button {
+        width: 1.25rem;
+        height: 1.25rem;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        cursor: pointer;
+
+        &:first-child {
+            margin-right: 0.5rem;
+        }
+
+        &--edit {
+           background-image: url('/assets/images/pencil.svg');
+        }
+
+        &--delete {
+           background-image: url('/assets/images/trash.svg');
+        }
+    }
+
+    &__info-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin-right: 0.5rem;
+    }
+}
