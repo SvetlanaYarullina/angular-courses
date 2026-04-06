@@ -1,0 +1,23 @@
+.header {
+    background-color: #F8FAFC;
+
+    &__wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 56px;
+    }
+
+    &__container {
+        display: flex;
+    }
+
+    &__person {
+        margin-right: 1.5rem;
+    }
+
+    &__icon {
+        margin-bottom: -7px;
+        margin-right: 5px;
+    }
+}

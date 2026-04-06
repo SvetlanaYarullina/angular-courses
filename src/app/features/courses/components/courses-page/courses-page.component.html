@@ -1,0 +1,35 @@
+<section class="courses-page">
+    <div class="courses-page__breadcrumbs">
+        <img class="courses-page__breadcrumbs-icon" src="/assets/images/home.svg" alt="icon">
+        <span>Курсы</span>
+    </div>
+    <div class="courses-toolbar">
+        <div class="courses-toolbar__search">
+            <input 
+                type="text" 
+                placeholder="Поиск"
+                [(ngModel)]="searchTerm"
+                class="search-input"
+            >
+            <button 
+                (click)="onSearch()"
+                class="search-button button"
+            >
+            <span>Найти</span>
+            </button>
+            </div>
+        <div class="courses-toolbar__add-course button">
+             <img class="courses-toolbar__add-cours-icon" src="/assets/images/plus.svg" alt="icon">
+              <span>Добавить курс</span>
+        </div>
+    </div>
+    <div class="content__container">
+        <app-course-card
+            *ngFor="let course of courses; trackBy: trackById"
+            [course]="course"
+            (edit)="onEditCourse($event)"
+            (delete)="onDeleteCourse($event)">
+        </app-course-card>
+    </div>
+    <div class="courses-page__button button" (click)="onLoadMore()">Загрузить еще</div>
+</section>
