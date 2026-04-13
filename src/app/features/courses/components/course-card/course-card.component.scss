@@ -92,3 +92,12 @@
         margin-right: 0.5rem;
     }
 }
+
+@media (max-width: 767px) {
+   .course-card {
+        &__header {
+            flex-direction: column;
+            margin-bottom: 1rem;
+        }
+    }
+}

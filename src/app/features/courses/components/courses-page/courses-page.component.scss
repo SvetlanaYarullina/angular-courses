@@ -1,5 +1,6 @@
 .button {
     padding: 12px 18px;
+    height: fit-content;
     border-radius: 4px;
     background-color: #3B82F6;
     border-color: #3B82F6;
@@ -91,6 +92,20 @@
                 outline: none; 
                 border-color: #3B82F6;
             }
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .courses-page {
+        margin: 1rem;
+    }
+
+    .courses-toolbar {
+        flex-direction: column;
+
+        &__search {
+            margin-bottom: 1rem;
         }
     }
 }
