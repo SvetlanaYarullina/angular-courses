@@ -1,7 +1,7 @@
-<div class="course-card">
+<div class="course-card" [appHighlightCourse]="course.creationDate" [ngClass]="{'favorite': course.topRated}">
   <div class="course-card__content">
     <div class="course-card__header">
-        <h2 class="course-card__title">{{ course.title }}</h2>
+        <h2 class="course-card__title" [ngClass]="{'favorite': course.topRated}">{{ course.title | uppercase }}</h2>
         <div class="course-card__info-wrapper">
             <div class="course-card__info-item">
                 <img class="course-card__info-icon" src="/assets/images/clock.svg" alt="icon">
@@ -9,7 +9,7 @@
             </div>
             <div class="course-card__info-item">
                 <img class="course-card__info-icon" src="/assets/images/celandar.svg" alt="icon">
-                <span class="course-card__info-text">{{ course.creationDate | date:'dd MMMM yyyy'}}</span>
+                <span class="course-card__info-text">{{ course.creationDate | date:'dd MMMM yyyy':'':'ru'}}</span>
             </div>
         </div>
     </div>

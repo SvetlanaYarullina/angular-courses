@@ -2,7 +2,11 @@
     margin-bottom: 1.5rem;
     padding: 1.5rem;
     border-radius: 0.5rem;
-    background: #EFF6FF;
+    background: #FFFFFF;
+
+    &.favorite {
+        background: #EFF6FF;
+    }
 
     &__header {
         display: flex;
@@ -11,6 +15,25 @@
 
     &__title {
         margin-bottom: 1rem;
+
+        &.favorite {
+            position: relative;
+            padding-right: 25px;
+            display: inline-block;
+
+            &::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 20px;
+                height: 20px;
+                background-image: url('/assets/images/star.svg');
+                background-size: contain;
+                background-repeat: no-repeat;
+            }
+        }
     }
 
     &__info-wrapper {

@@ -23,13 +23,29 @@
               <span>Добавить курс</span>
         </div>
     </div>
-    <div class="content__container">
-        <app-course-card
-            *ngFor="let course of courses; trackBy: trackById"
-            [course]="course"
-            (edit)="onEditCourse($event)"
-            (delete)="onDeleteCourse($event)">
-        </app-course-card>
+    <div class="courses-page__container">
+         <ng-container *ngIf="filteredCourses.length > 0; else noData">
+            <app-course-card
+                *ngFor="let course of filteredCourses; trackBy: trackById"
+                [course]="course"
+                (edit)="onEditCourse($event)"
+                (delete)="onDeleteCourse($event)">
+            </app-course-card>
+        </ng-container>
+        
+        <ng-template #noData>
+            <div class="courses-page__no-data">
+                <div class="courses-page__no-data-image">
+                    <img src="/assets/images/ban.svg" alt="Ничего не найдено">
+                </div>
+                <h4 *ngIf="searchTerm" class="courses-page__no-data-subtitle">
+                    Ничего не найдено
+                </h4>
+                <button (click)="resetFilters()" class="courses-page__reset-button button">
+                    Сбросить фильтры
+                </button>
+            </div>
+        </ng-template>
     </div>
-    <div class="courses-page__button button" (click)="onLoadMore()">Загрузить еще</div>
+    <div *ngIf="filteredCourses.length > 0" class="courses-page__button button" (click)="onLoadMore()">Загрузить еще</div>
 </section>
