@@ -21,3 +21,11 @@
         margin-right: 5px;
     }
 }
+
+@media (max-width: 767px) {
+   .header {
+        &__wrapper {
+            padding: 12px;
+        }
+    }
+}
