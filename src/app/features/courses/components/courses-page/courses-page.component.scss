@@ -1,0 +1,66 @@
+.button {
+    padding: 12px 18px;
+    border-radius: 4px;
+    background-color: #3B82F6;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+.courses-page {
+    display: flex;
+    flex-direction: column;
+    margin: 16px 56px;
+
+    &__breadcrumbs {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background-color: #FFFFFF;
+    }
+
+    &__breadcrumbs-icon {
+        margin-right: 5px;
+    }
+
+    &__button {
+        margin: 0 auto;
+        background-color: transparent;
+        border: 1px solid #64748B;
+        color: #64748B;
+    }
+}
+
+.courses-toolbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+    &__add-course {
+        display: flex;
+        align-items: center;
+    }
+
+    &__add-cours-icon {
+        margin-right: 5px;
+    }
+
+    &__search {
+        .search-button {
+            border-color: #3B82F6;
+        }
+
+        .search-input {
+            margin-right: 10px;
+            padding: 12px 18px;
+            border-radius: 4px;
+            border-color: #FFFFFF;
+
+            &:hover, &:active, &:focus {
+                outline: none; 
+                border-color: #3B82F6;
+            }
+        }
+    }
+}

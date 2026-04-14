@@ -1,1 +1,26 @@
-<p>course-card works!</p>
+<div class="course-card">
+  <div class="course-card__content">
+    <div class="course-card__header">
+        <h2 class="course-card__title">{{ course.title }}</h2>
+        <div class="course-card__info-wrapper">
+            <div class="course-card__info-item">
+                <img class="course-card__info-icon" src="/assets/images/clock.svg" alt="icon">
+                <span class="course-card__info-text">{{ course.duration | duration }}</span>
+            </div>
+            <div class="course-card__info-item">
+                <img class="course-card__info-icon" src="/assets/images/celandar.svg" alt="icon">
+                <span class="course-card__info-text">{{ course.creationDate | date:'dd MMMM yyyy'}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="course-card__info">
+        <p class="course-card__description">
+            {{ course.description }}
+        </p>
+        <div class="course-card__actions">
+            <div class="course-card__button course-card__button--edit" (click)="onEdit()"></div>
+            <div class="course-card__button course-card__button--delete" (click)="onDelete()"></div>
+        </div>
+    </div>
+  </div>
+</div>
