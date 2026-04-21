@@ -1,0 +1,63 @@
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 8px;
+}
+
+h2 {
+    color: #1E293B!important;
+    font-weight: 400;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #1E293B;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+  outline: none;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: #0F172A;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.cancel-button {
+  color: #3B82F6 !important;
+  font-weight: 400;
+}
+
+mat-dialog-content {
+  p {
+    color: #000000;
+    margin: 0;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+}
+
+
+::ng-deep {
+  .mat-dialog-container {
+    border-radius: 12px !important;
+    padding: 24px !important;
+  }
+
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    background-color: #FFFFFF!important;
+  }
+}
