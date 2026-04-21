@@ -1,0 +1,37 @@
+<div class="login">
+  <div class="login__container">
+    <h2 class="login__title">Вход</h2>
+    
+    <div class="login__form">
+      <div class="login__field">
+        <label class="login__label">Email</label>
+        <input 
+          type="text" 
+          class="login__input"
+          [(ngModel)]="login" 
+          placeholder="Например user@domain.com" 
+        />
+      </div>
+      
+      <div class="login__field">
+        <label class="login__label">Пароль</label>
+        <input 
+          type="password" 
+          class="login__input"
+          [(ngModel)]="password" 
+          placeholder="Ваш пароль" 
+        />
+      </div>
+      
+       <div class="login__footer">
+        <a href="#" class="login__forgot-link">Забыли пароль?</a>
+        <button 
+          (click)="onSubmit()" 
+          class="login__button button"
+        >
+          Войти
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

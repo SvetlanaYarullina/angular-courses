@@ -10,6 +10,7 @@ import { CoursesModule } from './features/courses/courses.module';
 import { CoreModule } from './core/core.module';
 import localeRu from '@angular/common/locales/ru';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AuthModule } from './features/auth/auth.module';
 
 registerLocaleData(localeRu);
 
@@ -24,6 +25,7 @@ registerLocaleData(localeRu);
     CoreModule,
     CoursesModule,
     BrowserAnimationsModule,
+    AuthModule,
   ],
    providers: [
     FilterPipe,
