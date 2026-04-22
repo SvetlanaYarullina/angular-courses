@@ -1,0 +1,13 @@
+<div class="dialog-header">
+  <h2 mat-dialog-title>Удалить курс?</h2>
+  <button class="close-button" (click)="onCancel()">✕</button>
+</div>
+
+<mat-dialog-content>
+  <p>Вы уверены, что хотите удалить курс <strong>«{{ data.courseTitle }}»</strong></p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button class="cancel-button" mat-button (click)="onCancel()">Отмена</button>
+  <button mat-raised-button color="warn" (click)="onConfirm()">Удалить</button>
+</mat-dialog-actions>
