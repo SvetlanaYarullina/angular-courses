@@ -1,33 +1,23 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { CoursesPageComponent } from './components/courses-page';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { CoursesPageComponent } from './pages/courses-page';
 import { CourseCardComponent } from './components/course-card';
+import { CourseAddComponent } from './pages/course-add/course-add.component';
+import { AuthorsSelectComponent } from './components/authors-select/authors-select.component';
 import { FilterPipe } from 'src/app/shared/pipes/filter.pipe';
 import { OrderByPipe } from 'src/app/shared/pipes/order-by.pipe';
-import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
-import { HighlightCourseDirective } from '../../shared/directive/highlight-even.directive';
-import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-
 
 @NgModule({
   declarations: [
     CoursesPageComponent,
     CourseCardComponent,
-    FilterPipe,
-    OrderByPipe,
-    DurationPipe,
-    HighlightCourseDirective,
-    ConfirmDialogComponent,
+    CourseAddComponent,
+    AuthorsSelectComponent,
   ],
   imports: [
-    CommonModule,
-    FormsModule,
-    MatDialogModule,
-    MatButtonModule 
+    SharedModule
   ],
+  providers: [FilterPipe, OrderByPipe],
   exports: [
     CoursesPageComponent
   ]

@@ -1,0 +1,100 @@
+.course-add {
+  margin: 20px 56px;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &__wrapper {
+    width: 50%;
+  }
+  
+
+  &__title {
+    margin: 0 0 24px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1E293B;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1E293B;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #3B82F6;
+    }
+  }
+
+  &__textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    box-sizing: border-box;
+    resize: vertical;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #3B82F6;
+    }
+  }
+
+  &__duration {
+    display: block;
+  }
+
+  &__datepicker {
+    width: 100%;
+  }
+
+  &__date-input {
+    width: 100%;
+  }
+
+  &__authors {
+    margin-top: 4px;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  &__button {
+    &--cancel {
+      background: transparent;
+      color: #3B82F6;
+      border-color: transparent;
+    }
+  }
+}
