@@ -1,30 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Course } from 'src/app/models/course.model';
-import { FilterPipe } from 'src/app/shared/pipes/filter.pipe';
-import { OrderByPipe } from 'src/app/shared/pipes/order-by.pipe';
+import { Injectable } from '@angular/core';
+import { Course } from '../models/course.model';
 
-@Component({
-  selector: 'app-courses-page',
-  templateUrl: './courses-page.component.html',
-  styleUrls: ['./courses-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+@Injectable({
+  providedIn: 'root'
 })
-export class CoursesPageComponent implements OnInit {
-  public courses: Course[] = [];
-  public searchTerm: string = '';
-  public filteredCourses: Course[] = [];
+export class CoursesService {
 
-  constructor(
-    private filterPipe: FilterPipe,
-    private orderByPipe: OrderByPipe,
-  ) {}
-  
-  ngOnInit(): void {
-    this.initializeCourses();
-  }
-
-   private initializeCourses(): void {
-    this.courses = [
+  private courses: Course[] = [
     {
       id: 1,
       title: 'Reprehenderit est veniam elit',
@@ -65,40 +47,31 @@ export class CoursesPageComponent implements OnInit {
       description: 'Est minim ea aute sunt laborum minim eu excepteur. Culpa sint exercitation mollit enim ad culpa aliquip laborum cillum. Dolor officia culpa labore ex eiusmod ut est ea voluptate ea nostrud.',
       topRated: false,
     }
-    ];
-
-    this.applyFilterAndSort();
-  }
-
-  private applyFilterAndSort(): void {
-    let result = this.filterPipe.transform(this.courses, this.searchTerm, 'title');
-    result = this.orderByPipe.transform(result, 'creationDate');
-    
-    this.filteredCourses = result;
-  }
-
-  public resetFilters(): void {
-    this.searchTerm = '';
-    this.applyFilterAndSort();
-  }
+  ];
   
-  onEditCourse(course: Course): void {
-    console.log('Редактирование курса:', course);
-  }
-  
-  onDeleteCourse(courseId: number): void {
-    console.log('Удаление курса:', courseId);
+  constructor() {}
+
+  public getList(): Course[] {
+    return this.courses;
   }
 
-  onSearch(): void {
-    this.applyFilterAndSort();
+  public createCourse(course: Course): Course {
+    this.courses.push(course);
+
+    return course;
   }
 
-  onLoadMore(): void {
-    console.log('Загрузить еще');
+  public getItemById(id: number): Course | undefined {
+    return this.courses.find(course => course.id === id);
   }
 
-  public trackById(index: number, course: Course): number {
-    return course.id;
+  public updateItem(id: number, updatedCourse: Partial<Course>): void {
+    this.courses = this.courses.map(course => 
+      course.id === id ? { ...course, ...updatedCourse } : course
+    );
+  }
+
+  public removeItem(id: number): void {
+    this.courses = this.courses.filter(course => course.id !== id);
   }
 }

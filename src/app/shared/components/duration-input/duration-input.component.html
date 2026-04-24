@@ -1,0 +1,9 @@
+<div class="duration-input">
+    <input
+      type="number"
+      [value]="value"
+      (input)="onInput($event)"
+      placeholder="Длительность в минутах"
+    />
+    <div class="duration-input__preview">{{ value | duration }}</div>
+</div>
