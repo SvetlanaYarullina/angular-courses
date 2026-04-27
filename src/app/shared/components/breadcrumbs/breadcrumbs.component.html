@@ -1,0 +1,6 @@
+<div class="breadcrumbs">
+    <img class="breadcrumbs__icon" src="/assets/images/home.svg" alt="icon">
+      <a class="breadcrumbs__text" routerLink="/courses">Курсы</a>
+      <img *ngIf="currentPageTitle" src="/assets/images/arrow-right.svg" class="breadcrumbs__arrow" alt="">
+    <span *ngIf="currentPageTitle">{{ currentPageTitle }}</span>
+</div>

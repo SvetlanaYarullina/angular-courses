@@ -31,9 +31,15 @@ export class AuthService {
 
   public getUserLogin(): string | null {
     const data = localStorage.getItem(this.STORAGE_KEY);
-    
     if (!data) return null;
     
-    return JSON.parse(data).login;
+    try {
+      const parsed = JSON.parse(data);
+      if (typeof parsed === 'string') return parsed;
+
+      return parsed.login || null;
+    } catch {
+      return data;
+    }
   }
 }

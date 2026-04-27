@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-login-page',
@@ -7,12 +9,19 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
-  public login: string = '';
-  public password: string = '';
+  login = '';
+  password = '';
 
-  @Output() loginSubmit = new EventEmitter<{ login: string; password: string }>();
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-  public onSubmit(): void {
-    this.loginSubmit.emit({ login: this.login, password: this.password });
+  onSubmit() {
+    const success = this.authService.login(this.login, this.password);
+    if (success) {
+      console.log('Выполнен вход в систему');
+      this.router.navigate(['/courses']);
+    }
   }
 }

@@ -1,12 +1,7 @@
 <app-header></app-header>
 
 <main>
-  <ng-container *ngIf="isAuthenticated(); else login">
-    <app-courses-page></app-courses-page>
-  </ng-container>
-  <ng-template #login>
-    <app-login-page (loginSubmit)="onLogin($event)"></app-login-page>
-  </ng-template>
+    <router-outlet></router-outlet>
 </main>
 
 <app-footer></app-footer>

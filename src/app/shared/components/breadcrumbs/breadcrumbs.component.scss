@@ -1,0 +1,21 @@
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #FFFFFF;
+
+    &__icon {
+        margin-right: 5px;
+    }
+
+    &__text {
+        text-decoration: none;
+        color: #1E293B;
+    }
+
+    &__arrow {
+        padding: 0.5rem;
+    }
+}
