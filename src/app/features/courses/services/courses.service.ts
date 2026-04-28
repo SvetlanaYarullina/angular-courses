@@ -59,6 +59,7 @@ export class CoursesService {
     const newId = Math.max(...this.courses.map(c => c.id), 0) + 1;
     const newCourse = { ...course, id: newId };
     this.courses.push(newCourse);
+    
     return newCourse;
   }
 

@@ -9,8 +9,8 @@ import { AuthService } from 'src/app/core/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
-  login = '';
-  password = '';
+  public login: string = '';
+  public password: string = '';
 
   constructor(
     private authService: AuthService,
