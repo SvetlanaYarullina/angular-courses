@@ -19,11 +19,7 @@ export class HeaderComponent {
   }
 
   public onLogout(): void {
-    const userLogin = this.authService.getUserLogin();
-
     this.authService.logout();
-    this.router.navigate(['/login']);    
-    
-    console.log(`Выход ${userLogin}`);
+    this.router.navigate(['/login']);
   }
 }

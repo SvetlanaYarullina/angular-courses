@@ -1,20 +1,31 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { catchError, map, Observable, of } from 'rxjs';
+import { User } from 'src/app/shared/models/user.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly STORAGE_KEY = 'auth_user';
+  private apiUrl = '/users';
 
-  public login(login: string, password: string): boolean {
-    if (!login || !password) return false;
-    
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify({
-      login: login,
-      token: 'fake-token'
-    }));
+  constructor(private http: HttpClient) {}
 
-    return true;
+  public login(login: string, password: string): Observable<boolean> {
+    return this.http.get<User[]>(`${this.apiUrl}?email=${login}&password=${password}`).pipe(
+      map(users => {
+        if (users.length) {
+          const user = users[0];
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify({
+            login: user.email,
+            token: user.fakeToken
+          }));
+
+          return true;
+        }
+        return false;
+      }),
+      catchError(() => of(false))
+    );
   }
 
   public logout(): void {
@@ -28,8 +39,12 @@ export class AuthService {
   public getUserLogin(): string | null {
     const data = localStorage.getItem(this.STORAGE_KEY);
 
-    if (!data) return null;
+    return data ? JSON.parse(data).login : null;
+  }
 
-    return JSON.parse(data).login;
+  public getToken(): string | null {
+    const data = localStorage.getItem(this.STORAGE_KEY);
+
+    return data ? JSON.parse(data).token : null;
   }
 }
