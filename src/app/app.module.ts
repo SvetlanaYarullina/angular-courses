@@ -1,37 +1,27 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { FormsModule } from '@angular/forms';
-import { OrderByPipe } from './shared/pipes/order-by.pipe';
-import { FilterPipe } from './shared/pipes/filter.pipe';
-import { registerLocaleData } from '@angular/common';
-import { CoursesModule } from './features/courses/courses.module';
-import { CoreModule } from './core/core.module';
-import localeRu from '@angular/common/locales/ru';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { registerLocaleData } from '@angular/common';
+import localeRu from '@angular/common/locales/ru';
+import { AppComponent } from './app.component';
+import { CoreModule } from './core/core.module';
+import { CoursesModule } from './features/courses/courses.module';
 import { AuthModule } from './features/auth/auth.module';
+import { SharedModule } from './shared/shared.module';
 
 registerLocaleData(localeRu);
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    FormsModule,
+    BrowserAnimationsModule,
     CoreModule,
     CoursesModule,
-    BrowserAnimationsModule,
     AuthModule,
+    SharedModule,
   ],
-   providers: [
-    FilterPipe,
-    OrderByPipe,
-    { provide: LOCALE_ID, useValue: 'ru' }
-  ],
+  providers: [{ provide: LOCALE_ID, useValue: 'ru' }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,0 +1,64 @@
+<div class="course-add">
+    <div class="course-add__wrapper">
+        <h2 class="course-add__title">Новый курс</h2>
+
+        <div class="course-add__form">
+            <div class="course-add__field">
+            <label class="course-add__label">Наименование*</label>
+            <input 
+                type="text" 
+                class="course-add__input"
+                [(ngModel)]="course.title" 
+            />
+            </div>
+
+            <div class="course-add__field">
+            <label class="course-add__label">Описание*</label>
+            <textarea 
+                class="course-add__textarea"
+                [(ngModel)]="course.description" 
+                rows="5"
+            ></textarea>
+            </div>
+
+            <div class="course-add__field">
+            <label class="course-add__label">Продолжительность*</label>
+            <app-duration-input 
+                class="course-add__duration"
+                [(value)]="course.duration"
+            ></app-duration-input>
+            </div>
+
+            <div class="course-add__field">
+                <label class="course-add__label">Дата*</label>
+                <input 
+                    type="date" 
+                    class="course-add__input"
+                    [value]="course.creationDate | date:'yyyy-MM-dd'"
+                    (change)="onDateChange($event)"
+                />
+            </div>
+
+            <div class="course-add__authors">
+            <app-authors-select></app-authors-select>
+            </div>
+
+            <div class="course-add__actions">
+            <button 
+                type="button" 
+                class="course-add__button course-add__button--cancel button" 
+                (click)="onCancel()"
+            >
+                Отмена
+            </button>
+            <button 
+                type="button" 
+                class="course-add__button button" 
+                (click)="onSave()"
+            >
+                Сохранить
+            </button>
+            </div>
+        </div>
+  </div>
+</div>
