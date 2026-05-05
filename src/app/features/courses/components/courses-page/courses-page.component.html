@@ -29,7 +29,7 @@
                 *ngFor="let course of filteredCourses; trackBy: trackById"
                 [course]="course"
                 (edit)="onEditCourse($event)"
-                (delete)="onDeleteCourse($event)">
+                (delete)="onDeleteCourse(course)">
             </app-course-card>
         </ng-container>
         

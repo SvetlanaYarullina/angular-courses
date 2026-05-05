@@ -10,10 +10,11 @@
 
     &__container {
         display: flex;
+        gap: 1rem;
     }
 
-    &__person {
-        margin-right: 1.5rem;
+    &__person, &__exit {
+        cursor: pointer;
     }
 
     &__icon {
