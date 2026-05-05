@@ -13,16 +13,12 @@ export class AuthService {
       login: login,
       token: 'fake-token'
     }));
-    
-    console.log(`Выполнен вход пользователя: ${login}`);
+
     return true;
   }
 
   public logout(): void {
-    const login = this.getUserLogin();
-
     localStorage.removeItem(this.STORAGE_KEY);
-    console.log(`Выход ${login}`);
   }
 
   public isAuthenticated(): boolean {
@@ -31,9 +27,9 @@ export class AuthService {
 
   public getUserLogin(): string | null {
     const data = localStorage.getItem(this.STORAGE_KEY);
-    
+
     if (!data) return null;
-    
+
     return JSON.parse(data).login;
   }
 }

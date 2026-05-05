@@ -9,6 +9,9 @@ import { OrderByPipe } from './pipes/order-by.pipe';
 import { DurationInputComponent } from './components/duration-input/duration-input.component';
 import { HighlightCourseDirective } from './directive/highlight-even.directive';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { RouterModule } from '@angular/router';
+import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
 
 @NgModule({
   declarations: [
@@ -18,12 +21,15 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     DurationInputComponent,
     HighlightCourseDirective,
     ConfirmDialogComponent,
+    PageNotFoundComponent,
+    BreadcrumbsComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
     MatDialogModule,
     MatButtonModule,
+    RouterModule,
   ],
   exports: [
     DurationPipe,
@@ -36,6 +42,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     MatButtonModule,
     CommonModule,
     FormsModule,
+    BreadcrumbsComponent
   ],
 })
 export class SharedModule { }

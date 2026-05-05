@@ -18,7 +18,7 @@
             {{ course.description }}
         </p>
         <div class="course-card__actions">
-            <div class="course-card__button course-card__button--edit" (click)="onEdit()"></div>
+            <div class="course-card__button course-card__button--edit" [routerLink]="['/courses', course.id]"></div>
             <div class="course-card__button course-card__button--delete" (click)="onDelete()"></div>
         </div>
     </div>

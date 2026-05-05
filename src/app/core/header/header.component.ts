@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -7,7 +8,7 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   public isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
@@ -21,6 +22,7 @@ export class HeaderComponent {
     const userLogin = this.authService.getUserLogin();
 
     this.authService.logout();
+    this.router.navigate(['/login']);    
     
     console.log(`Выход ${userLogin}`);
   }

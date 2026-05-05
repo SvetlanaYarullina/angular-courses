@@ -55,10 +55,12 @@ export class CoursesService {
     return this.courses;
   }
 
-  public createCourse(course: Course): Course {
-    this.courses.push(course);
-
-    return course;
+  public createCourse(course: Omit<Course, 'id'>): Course {
+    const newId = Math.max(...this.courses.map(c => c.id), 0) + 1;
+    const newCourse = { ...course, id: newId };
+    this.courses.push(newCourse);
+    
+    return newCourse;
   }
 
   public getItemById(id: number): Course | undefined {

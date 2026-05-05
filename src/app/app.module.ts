@@ -5,9 +5,9 @@ import { registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
-import { CoursesModule } from './features/courses/courses.module';
 import { AuthModule } from './features/auth/auth.module';
 import { SharedModule } from './shared/shared.module';
+import { AppRoutingModule } from './app-routing.module';
 
 registerLocaleData(localeRu);
 
@@ -15,9 +15,9 @@ registerLocaleData(localeRu);
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     BrowserAnimationsModule,
     CoreModule,
-    CoursesModule,
     AuthModule,
     SharedModule,
   ],
