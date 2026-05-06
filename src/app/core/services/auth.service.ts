@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 import { User } from 'src/app/shared/models/user.model';
@@ -14,24 +14,32 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   public login(login: string, password: string): Observable<boolean> {
-    return this.http.get<User[]>(`${this.apiUrl}?email=${login}&password=${password}`).pipe(
+    const params = new HttpParams()
+      .set('email', login)
+      .set('password', password);
+
+    return this.http.get<User[]>(this.apiUrl, { params }).pipe(
       map(users => {
-        if (users.length) {
-          const user = users[0];
-
-          localStorage.setItem(this.STORAGE_KEY, JSON.stringify({
-            login: user.email,
-            token: user.fakeToken
-          }));
-
-          this._userLogin$.next(user.email);
-
-          return true;
+        if (!users.length) {
+          this._userLogin$.next(null);
+          return false;
         }
 
-        return false;
+        const user = users[0];
+
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify({
+          login: user.email,
+          token: user.fakeToken
+        }));
+
+        this._userLogin$.next(user.email);
+
+        return true;
       }),
-      catchError(() => of(false))
+      catchError(() => {
+        this._userLogin$.next(null);
+        return of(false);
+      })
     );
   }
 
