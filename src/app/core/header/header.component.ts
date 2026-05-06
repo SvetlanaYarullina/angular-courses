@@ -8,21 +8,15 @@ import { Router } from '@angular/router';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  public userLogin: string | null = null;
+  public userLogin$ = this.authService.userLogin$;
 
   constructor(
-    private authService: AuthService, 
+    private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.loadUserInfo();
-  }
-
-  private loadUserInfo(): void {
-    this.authService.getUserInfo().subscribe(user => {
-      this.userLogin = user ? user.email : null;
-    });
+    this.authService.getUserInfo().subscribe();
   }
 
   public isAuthenticated(): boolean {
@@ -31,7 +25,6 @@ export class HeaderComponent implements OnInit {
 
   public onLogout(): void {
     this.authService.logout();
-    this.userLogin = null;
     this.router.navigate(['/login']);
   }
 }
