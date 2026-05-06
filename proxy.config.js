@@ -1,0 +1,17 @@
+module.exports = {
+  "/videocourses": {
+    target: "http://localhost:3000",
+    secure: false,
+    logLevel: "debug"
+  },
+  "/users": {
+    target: "http://localhost:3000",
+    secure: false,
+    logLevel: "debug"
+  },
+  "/authors": {
+    target: "http://localhost:3000",
+    secure: false,
+    logLevel: "debug"
+  }
+};

@@ -17,11 +17,11 @@ export class LoginPageComponent {
     private router: Router
   ) {}
 
-  onSubmit() {
-    const success = this.authService.login(this.login, this.password);
-    if (success) {
-      console.log('Выполнен вход в систему');
-      this.router.navigate(['/courses']);
-    }
+  public onSubmit(): void {
+    this.authService.login(this.login, this.password).subscribe(success => {
+      if (success) {
+        this.router.navigate(['/courses']);
+      }
+    });
   }
 }

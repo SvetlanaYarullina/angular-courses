@@ -29,22 +29,33 @@ export class CourseFormComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
-      const loadedCourse = this.coursesService.getItemById(+id);
-      if (loadedCourse) {
-        this.course = { ...loadedCourse };
-      } else {
-        this.router.navigate(['/courses']);
-      }
+      this.coursesService.getItemById(+id).subscribe({
+        next: (loadedCourse) => {
+          this.course = { ...loadedCourse };
+        },
+        error: () => {
+          this.router.navigate(['/courses']);
+        }
+      });
     }
   }
 
   public onSave(): void {
     if (this.isEditMode) {
-      this.coursesService.updateItem(this.course.id, this.course);
-    } else {
-      this.coursesService.createCourse(this.course);
+      this.coursesService.updateItem(this.course.id, this.course).subscribe({
+        next: () => this.router.navigate(['/courses']),
+        error: err => console.error('Ошибка сохранения курса', err),
+      });
+
+      return;
     }
-    this.router.navigate(['/courses']);
+
+    const { id, ...courseToCreate } = this.course;
+
+    this.coursesService.createCourse(courseToCreate).subscribe({
+      next: () => this.router.navigate(['/courses']),
+      error: err => console.error('Ошибка сохранения курса', err),
+    });
   }
 
   public onCancel(): void {
