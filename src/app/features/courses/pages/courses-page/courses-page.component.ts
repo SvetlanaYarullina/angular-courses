@@ -3,7 +3,8 @@ import { Course } from 'src/app/features/courses/models/course.model';
 import { CoursesService } from '../../services/courses.service';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { finalize, Subject, takeUntil } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, finalize, map, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { LoadingService } from 'src/app/core/services/loading.service';
 
 @Component({
   selector: 'app-courses-page',
@@ -20,15 +21,55 @@ export class CoursesPageComponent implements OnInit, OnDestroy {
   private currentStart = 0;
   private pageSize = 10;
   private destroy$ = new Subject<void>();
+  private searchSubject = new Subject<string>();
 
   constructor(
     private coursesService: CoursesService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
+    private loadingService: LoadingService,
   ) {}
 
   ngOnInit(): void {
     this.loadCourses();
+    this.initSearch();
+  }
+
+  private initSearch(): void {
+    this.searchSubject
+      .pipe(
+        map(search => search.trim()),
+        debounceTime(250),
+        distinctUntilChanged(),
+        filter(search => search.length >= 3),
+        tap(() => {
+          this.loading = true;
+          this.loadMore = false;
+          this.currentStart = 0;
+          this.loadingService.show();
+        }),
+        switchMap(search => {
+          return this.coursesService.getList(0, 100, search).pipe(
+            catchError(err => {
+              console.error('Ошибка поиска курсов', err);
+              return of([]);
+            }),
+            finalize(() => {
+              this.loading = false;
+              this.loadingService.hide();
+              this.cdr.markForCheck();
+            })
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(courses => {
+        this.courses = courses;
+      });
+  }
+
+  public onSearchKeyup(search: string): void {
+    this.searchSubject.next(search);
   }
 
   public loadCourses(): void {
@@ -37,41 +78,36 @@ export class CoursesPageComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
+    this.loadingService.show();
 
-    const search = this.searchTerm.trim();
-    const limit = search ? 100 : this.pageSize;
-
-    this.coursesService.getList(this.currentStart, limit, search)
+    this.coursesService.getList(this.currentStart, this.pageSize)
       .pipe(
         takeUntil(this.destroy$),
+        catchError(err => {
+          console.error('Ошибка загрузки курсов', err);
+          return of([]);
+        }),
         finalize(() => {
           this.loading = false;
+          this.loadingService.hide();
           this.cdr.markForCheck();
         })
       )
-      .subscribe({
-        next: courses => {
-          if (this.currentStart === 0) {
-            this.courses = courses;
-          } else {
-            this.courses = [...this.courses, ...courses];
-          }
-
-          this.loadMore = !search && courses.length === this.pageSize;
-        },
-        error: err => {
-          console.error('Ошибка загрузки курсов', err);
+      .subscribe(courses => {
+        if (this.currentStart === 0) {
+          this.courses = courses;
+        } else {
+          this.courses = [...this.courses, ...courses];
         }
+
+        this.loadMore = courses.length === this.pageSize;
       });
   }
-  
-  public onSearch() {
-    this.currentStart = 0;
-    this.loadCourses(); 
-  }
 
-  public onLoadMore() {
-    if (!this.loadMore || this.loading) return;
+  public onLoadMore(): void {
+    if (!this.loadMore || this.loading) {
+      return;
+    }
 
     this.currentStart += this.pageSize;
     this.loadCourses();
@@ -86,12 +122,28 @@ export class CoursesPageComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed()
       .pipe(takeUntil(this.destroy$))
       .subscribe(confirmed => {
-        if (confirmed) {
-          this.coursesService.removeItem(course.id).subscribe(() => {
+        if (!confirmed) {
+          return;
+        }
+
+        this.loadingService.show();
+
+        this.coursesService.removeItem(course.id)
+          .pipe(
+            takeUntil(this.destroy$),
+            catchError(err => {
+              console.error('Ошибка удаления курса', err);
+              return of(null);
+            }),
+            finalize(() => {
+              this.loadingService.hide();
+              this.cdr.markForCheck();
+            })
+          )
+          .subscribe(() => {
             this.currentStart = 0;
             this.loadCourses();
           });
-        }
       });
   }
 
@@ -101,12 +153,12 @@ export class CoursesPageComponent implements OnInit, OnDestroy {
     this.loadCourses();
   }
 
+  public trackById(index: number, course: Course): number {
+    return course.id;
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  public trackById(index: number, course: Course): number {
-    return course.id;
   }
 }

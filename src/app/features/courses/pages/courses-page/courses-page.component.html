@@ -7,11 +7,9 @@
         type="text" 
         placeholder="Поиск"
         [(ngModel)]="searchTerm"
+        (keyup)="onSearchKeyup(searchTerm)"
         class="search-input"
-      >
-      <button (click)="onSearch()" class="search-button button">
-        <span>Найти</span>
-      </button>
+      />
     </div>
     <div class="courses-toolbar__add-course button" routerLink="/courses/new">
       <img class="courses-toolbar__add-cours-icon" src="/assets/images/plus.svg" alt="icon">

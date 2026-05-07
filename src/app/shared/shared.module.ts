@@ -12,6 +12,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.compo
     ConfirmDialogComponent,
     PageNotFoundComponent,
     BreadcrumbsComponent,
+    LoadingComponent,
   ],
   imports: [
     CommonModule,
@@ -42,7 +44,8 @@ import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.compo
     MatButtonModule,
     CommonModule,
     FormsModule,
-    BreadcrumbsComponent
+    BreadcrumbsComponent,
+    LoadingComponent,
   ],
 })
 export class SharedModule { }

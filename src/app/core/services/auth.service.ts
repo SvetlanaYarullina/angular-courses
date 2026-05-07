@@ -21,6 +21,7 @@ export class AuthService {
     return this.http.get<User[]>(this.apiUrl, { params }).pipe(
       map(users => {
         if (!users.length) {
+          localStorage.removeItem(this.STORAGE_KEY);
           this._userLogin$.next(null);
           return false;
         }
@@ -37,6 +38,7 @@ export class AuthService {
         return true;
       }),
       catchError(() => {
+        localStorage.removeItem(this.STORAGE_KEY);
         this._userLogin$.next(null);
         return of(false);
       })
@@ -66,7 +68,9 @@ export class AuthService {
       return of(null);
     }
 
-    return this.http.get<User[]>(`${this.apiUrl}?fakeToken=${token}`).pipe(
+    const params = new HttpParams().set('fakeToken', token);
+
+    return this.http.get<User[]>(this.apiUrl, { params }).pipe(
       map(users => users.length ? users[0] : null),
       tap(user => {
         this._userLogin$.next(user ? user.email : null);
