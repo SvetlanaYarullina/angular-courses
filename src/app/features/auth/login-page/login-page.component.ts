@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { LoadingService } from 'src/app/core/services/loading.service';
 
 @Component({
   selector: 'app-login-page',
@@ -14,14 +16,21 @@ export class LoginPageComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private loadingService: LoadingService,
   ) {}
 
   public onSubmit(): void {
-    this.authService.login(this.login, this.password).subscribe(success => {
-      if (success) {
-        this.router.navigate(['/courses']);
-      }
-    });
+    this.loadingService.show();
+
+    this.authService.login(this.login, this.password)
+      .pipe(
+        finalize(() => this.loadingService.hide())
+      )
+      .subscribe(success => {
+        if (success) {
+          this.router.navigate(['/courses']);
+        }
+      });
   }
 }
