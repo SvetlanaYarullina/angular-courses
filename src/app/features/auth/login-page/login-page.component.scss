@@ -60,7 +60,10 @@
   }
 
   &__button {
-    opacity: 60%;
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   }
 
   &__forgot-link {
@@ -79,5 +82,23 @@
       color: #2563EB;
       text-decoration: underline;
     }
+  }
+    &__input {
+    &.ng-invalid.ng-touched,
+    &.ng-invalid.ng-dirty {
+      border-color: #DC2626;
+    }
+
+    &.ng-invalid.ng-touched:focus,
+    &.ng-invalid.ng-dirty:focus {
+      border-color: #DC2626;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+  }
+
+  &__error {
+    color: #DC2626;
+    font-size: 12px;
+    line-height: 1.3;
   }
 }

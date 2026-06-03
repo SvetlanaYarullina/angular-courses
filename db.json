@@ -241,22 +241,12 @@
       "title": "ex laborum est cupidatat",
       "description": "Quis tempor eiusmod esse id minim anim. Ut ipsum deserunt non mollit excepteur laborum ex occaecat labore dolore cupidatat elit. Incididunt fugiat sint eu Lorem culpa tempor nisi nostrud nisi.",
       "topRated": false,
-      "creationDate": "2020-11-18T09:06:11+00:00",
+      "creationDate": "2020-11-18T09:06:11.000Z",
       "authors": [
         {
           "id": 9364,
           "name": "Berger",
           "lastName": "Powell"
-        },
-        {
-          "id": 3477,
-          "name": "Daugherty",
-          "lastName": "Guy"
-        },
-        {
-          "id": 2005,
-          "name": "Dotson",
-          "lastName": "Hernandez"
         }
       ],
       "duration": 171
@@ -700,6 +690,28 @@
           "name": "Carey Jarvis"
         }
       ]
+    },
+    {
+      "title": "test",
+      "description": "test",
+      "duration": 135,
+      "creationDate": "2026-06-02T21:00:00.000Z",
+      "topRated": false,
+      "authors": [
+        {
+          "id": "5b7a846290d6ff6894377fb5",
+          "name": "Decker Albert"
+        },
+        {
+          "id": "5b7a84628298a95c17462193",
+          "name": "Carey Jarvis"
+        },
+        {
+          "id": "5b7a846270affc8f0438eddf",
+          "name": "Solomon Dotson"
+        }
+      ],
+      "id": 9820
     }
   ],
   "users": [
@@ -725,6 +737,14 @@
       "firstName": "Bilbo",
       "lastName": "Baggins",
       "email": "baggins@gmail.com",
+      "password": "qwerty"
+    },
+    {
+      "id": 4,
+      "fakeToken": "58ebfdf7ec92657b493b24e5",
+      "firstName": "Svetlana",
+      "lastName": "Nozhkina",
+      "email": "sveta@gmail.com",
       "password": "qwerty"
     }
   ],

@@ -1,37 +1,69 @@
 <div class="login">
   <div class="login__container">
     <h2 class="login__title">Вход</h2>
-    
-    <div class="login__form">
+
+    <form 
+      #userForm="ngForm" 
+      class="login__form"  
+      (ngSubmit)="onSubmit(userForm)"
+      novalidate
+    >
       <div class="login__field">
         <label class="login__label">Email</label>
+
         <input 
-          type="text" 
+          #emailControl="ngModel"
+          type="email" 
           class="login__input"
-          [(ngModel)]="login" 
+          ngModel
+          name="email"
+          required
+          email
           placeholder="Например user@domain.com" 
         />
+
+        <div 
+          class="login__error"
+          *ngIf="emailControl.invalid && (emailControl.touched || emailControl.dirty)"
+        >
+          <span *ngIf="emailControl.errors?.['required']">Пожалуйста, введите Email</span>
+        </div>
       </div>
-      
+
       <div class="login__field">
         <label class="login__label">Пароль</label>
+
         <input 
+          #passwordControl="ngModel"
           type="password" 
           class="login__input"
-          [(ngModel)]="password" 
+          ngModel
+          name="password"
+          required
+          maxlength="20"
           placeholder="Ваш пароль" 
         />
+
+        <div 
+          class="login__error"
+          *ngIf="passwordControl.invalid && (passwordControl.touched || passwordControl.dirty)"
+        >
+          <span *ngIf="passwordControl.errors?.['required']">Пожалуйста, введите пароль</span>
+        </div>
       </div>
-      
-       <div class="login__footer">
+
+      <div class="login__footer">
         <a href="#" class="login__forgot-link">Забыли пароль?</a>
+
         <button 
-          (click)="onSubmit()" 
+          type="submit"
+          [disabled]="userForm.invalid"
           class="login__button button"
         >
           Войти
         </button>
       </div>
-    </div>
+    </form>
+
   </div>
 </div>

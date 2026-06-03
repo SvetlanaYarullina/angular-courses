@@ -5,4 +5,11 @@ export interface Course {
   duration: number;
   description: string;
   topRated: boolean;
+  authors?: Author[];
+}
+
+export interface Author {
+  id: number | string;
+  name: string;
+  lastName?: string;
 }

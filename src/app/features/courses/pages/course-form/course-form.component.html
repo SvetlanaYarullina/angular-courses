@@ -3,46 +3,89 @@
     <div class="course-add__container">
         <div class="course-add__wrapper">
             <h2 class="course-add__title">{{ isEditMode ? 'Редактирование курса' : 'Новый курс' }}</h2>
-
-            <div class="course-add__form">
+              <form 
+                class="course-add__form" 
+                [formGroup]="courseForm" 
+                (ngSubmit)="onSave()"
+            >
                 <div class="course-add__field">
                 <label class="course-add__label">Наименование*</label>
+
                 <input 
                     type="text" 
                     class="course-add__input"
-                    [(ngModel)]="course.title" 
+                    formControlName="title"
                 />
+
+                <div class="course-add__error" *ngIf="hasError('title', 'required')">
+                    Наименование обязательно
+                </div>
+
+                <div class="course-add__error" *ngIf="hasError('title', 'maxlength')">
+                    Максимальная длина — 50 символов
+                </div>
                 </div>
 
                 <div class="course-add__field">
                 <label class="course-add__label">Описание*</label>
+
                 <textarea 
                     class="course-add__textarea"
-                    [(ngModel)]="course.description" 
+                    formControlName="description"
                     rows="5"
                 ></textarea>
+
+                <div class="course-add__error" *ngIf="hasError('description', 'required')">
+                    Описание обязательно
+                </div>
+
+                <div class="course-add__error" *ngIf="hasError('description', 'maxlength')">
+                    Максимальная длина — 500 символов
+                </div>
                 </div>
 
                 <div class="course-add__field">
-                <label class="course-add__label">Продолжительность*</label>
-                <app-duration-input 
-                    class="course-add__duration"
-                    [(value)]="course.duration"
-                ></app-duration-input>
+                    <label class="course-add__label">Продолжительность*</label>
+
+                    <app-duration-input 
+                        class="course-add__duration"
+                        [control]="durationControl"
+                    ></app-duration-input>
+
+                    <div class="course-add__error" *ngIf="hasError('duration', 'required')">
+                        Продолжительность обязательна
+                    </div>
+
+                    <div class="course-add__error" *ngIf="hasError('duration', 'pattern')">
+                        Допускаются только числа
+                    </div>
                 </div>
 
                 <div class="course-add__field">
                     <label class="course-add__label">Дата*</label>
-                    <input 
-                        type="date" 
-                        class="course-add__input"
-                        [value]="course.creationDate | date:'yyyy-MM-dd'"
-                        (change)="onDateChange($event)"
-                    />
+                    
+                        <p-calendar
+                            formControlName="creationDate"
+                            [showIcon]="true"
+                            dateFormat="dd/mm/yy"
+                            placeholder="dd/mm/yyyy"
+                            class="p-fluid"
+                        ></p-calendar>
+
+                    <div class="course-add__error" *ngIf="hasError('creationDate', 'required')">
+                        Дата обязательна
+                    </div>
                 </div>
 
-                <div class="course-add__authors">
-                <app-authors-select></app-authors-select>
+                <div class="course-add__field">
+                    <label class="course-add__label">Авторы*</label>
+
+                    <div class="course-add__authors">
+                        <app-authors-select [control]="authorsControl"></app-authors-select>
+                    </div>
+                     <div class="course-add__error" *ngIf="hasError('authors', 'required')">
+                        Необходимо указать хотя бы одного автора
+                    </div>
                 </div>
 
                 <div class="course-add__actions">
@@ -53,15 +96,16 @@
                 >
                     Отмена
                 </button>
+
                 <button 
-                    type="button" 
-                    class="course-add__button button" 
-                    (click)="onSave()"
+                    type="submit" 
+                    class="course-add__button course-add__button--submit button"
+                    [disabled]="courseForm.invalid"
                 >
                     Сохранить
                 </button>
                 </div>
-            </div>
+            </form>
         </div>
   </div>
 </div>

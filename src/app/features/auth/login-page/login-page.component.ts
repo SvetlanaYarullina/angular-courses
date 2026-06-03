@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth.service';
@@ -11,19 +12,22 @@ import { LoadingService } from 'src/app/core/services/loading.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
-  public login: string = '';
-  public password: string = '';
-
   constructor(
     private authService: AuthService,
     private router: Router,
     private loadingService: LoadingService,
   ) {}
 
-  public onSubmit(): void {
+  public onSubmit(form: NgForm): void {
+    if (form.invalid) {
+      return;
+    }
+
+    const { email, password } = form.value;
+
     this.loadingService.show();
 
-    this.authService.login(this.login, this.password)
+    this.authService.login(email, password)
       .pipe(
         finalize(() => this.loadingService.hide())
       )
