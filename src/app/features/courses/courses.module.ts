@@ -7,6 +7,9 @@ import { AuthorsSelectComponent } from './components/authors-select/authors-sele
 import { FilterPipe } from 'src/app/shared/pipes/filter.pipe';
 import { OrderByPipe } from 'src/app/shared/pipes/order-by.pipe';
 import { CoursesRoutingModule } from './courses-routing.module';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CalendarModule } from 'primeng/calendar';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @NgModule({
   declarations: [
@@ -18,6 +21,9 @@ import { CoursesRoutingModule } from './courses-routing.module';
   imports: [
     SharedModule,
     CoursesRoutingModule,
+    ReactiveFormsModule,
+    CalendarModule,
+    AutoCompleteModule,
   ],
   providers: [FilterPipe, OrderByPipe],
   exports: [

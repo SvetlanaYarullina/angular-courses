@@ -1,1 +1,23 @@
-<p>authors-select works!</p>
+<p-autoComplete
+  class="authors-select"
+  styleClass="authors-select__autocomplete"
+  panelStyleClass="authors-select__panel"
+  [formControl]="control"
+  [suggestions]="filteredAuthors"
+  [multiple]="true"
+  [forceSelection]="true"
+  [scrollHeight]="'160px'"
+  appendTo="body"
+  (completeMethod)="filterAuthors($event)"
+  (onSelect)="onAuthorsChange()"
+  (onUnselect)="onAuthorsChange()"
+  (onBlur)="control.markAsTouched()"
+>
+  <ng-template let-author pTemplate="item">
+    {{ getAuthorName(author) }}
+  </ng-template>
+
+  <ng-template let-author pTemplate="selectedItem">
+    {{ getAuthorName(author) }}
+  </ng-template>
+</p-autoComplete>

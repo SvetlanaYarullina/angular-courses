@@ -41,14 +41,36 @@ export class CoursesPageComponent implements OnInit, OnDestroy {
         map(search => search.trim()),
         debounceTime(250),
         distinctUntilChanged(),
-        filter(search => search.length >= 3),
-        tap(() => {
+        switchMap(search => {
+          this.currentStart = 0;
+
+          if (!search) {
+            this.loading = true;
+            this.loadMore = true;
+            this.loadingService.show();
+
+            return this.coursesService.getList(0, this.pageSize).pipe(
+              catchError(err => {
+                console.error('Ошибка загрузки курсов', err);
+                return of([]);
+              }),
+              finalize(() => {
+                this.loading = false;
+                this.loadingService.hide();
+                this.cdr.markForCheck();
+              })
+            );
+          }
+
+          if (search.length < 3) {
+            this.loadMore = false;
+            return of(null);
+          }
+
           this.loading = true;
           this.loadMore = false;
-          this.currentStart = 0;
           this.loadingService.show();
-        }),
-        switchMap(search => {
+
           return this.coursesService.getList(0, 100, search).pipe(
             catchError(err => {
               console.error('Ошибка поиска курсов', err);
@@ -64,7 +86,12 @@ export class CoursesPageComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(courses => {
+        if (courses === null) {
+          return;
+        }
+
         this.courses = courses;
+        this.loadMore = !this.searchTerm.trim() && courses.length === this.pageSize;
       });
   }
 

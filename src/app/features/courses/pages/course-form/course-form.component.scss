@@ -11,7 +11,6 @@
   &__wrapper {
     width: 50%;
   }
-  
 
   &__title {
     margin: 0 0 24px 0;
@@ -99,5 +98,18 @@
       color: #3B82F6;
       border-color: transparent;
     }
+
+    &--submit {
+       &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  &__error {
+    color: #DC2626;
+    font-size: 12px;
+    line-height: 1.3;
   }
 }

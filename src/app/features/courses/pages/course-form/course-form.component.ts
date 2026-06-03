@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CoursesService } from '../../services/courses.service';
-import { Course } from '../../models/course.model';
+import { Author, Course } from '../../models/course.model';
 import { finalize } from 'rxjs';
 import { LoadingService } from 'src/app/core/services/loading.service';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-course-form',
@@ -27,6 +28,7 @@ export class CourseFormComponent implements OnInit {
     private coursesService: CoursesService,
     private router: Router,
     private loadingService: LoadingService,
+    private fb: FormBuilder,
   ) {}
 
   ngOnInit(): void {
@@ -40,38 +42,68 @@ export class CourseFormComponent implements OnInit {
     this.loadingService.show();
 
     this.coursesService.getItemById(+id)
-      .pipe(
-        finalize(() => this.loadingService.hide())
-      )
-      .subscribe({
-        next: loadedCourse => {
-          this.course = { ...loadedCourse };
-        },
-        error: () => {
-          this.router.navigate(['/courses']);
-        }
-      });
+    .pipe(
+    finalize(() => this.loadingService.hide())
+    )
+    .subscribe({
+      next: loadedCourse => {
+        this.course = { ...loadedCourse };
+        
+        this.courseForm.patchValue({
+          title: loadedCourse.title,
+          description: loadedCourse.description,
+          duration: loadedCourse.duration,
+          creationDate: new Date(loadedCourse.creationDate),
+          authors: loadedCourse.authors || [],
+          topRated: loadedCourse.topRated,
+        });
+      },
+      error: () => this.router.navigate(['/courses'])
+    });
+    }
+
+  public courseForm = this.fb.group({
+    title: ['', [Validators.required, Validators.maxLength(50)]],
+    description: ['', [Validators.required, Validators.maxLength(500)]],
+    creationDate: [null as Date | null, [Validators.required]],
+    duration: [null as number | null, [
+      Validators.required,
+      Validators.pattern(/^\d+$/)
+    ]],
+    authors: [[] as Author[], [Validators.required]],
+    topRated: [false],
+  });
+
+  public hasError(controlName: string, errorName: string): boolean {
+    const control = this.courseForm.get(controlName);
+
+    return !!control && control.touched && control.hasError(errorName);
   }
 
   public onSave(): void {
-    this.loadingService.show();
-
-    if (this.isEditMode) {
-      this.coursesService.updateItem(this.course.id, this.course)
-        .pipe(
-          finalize(() => this.loadingService.hide())
-        )
-        .subscribe({
-          next: () => this.router.navigate(['/courses']),
-          error: err => console.error('Ошибка сохранения курса', err),
-        });
-
+    if (this.courseForm.invalid) {
+      this.courseForm.markAllAsTouched();
       return;
     }
 
-    const { id, ...courseToCreate } = this.course;
+    const formValue = this.courseForm.getRawValue();
 
-    this.coursesService.createCourse(courseToCreate)
+    const courseToSave: Omit<Course, 'id'> = {
+      title: formValue.title!,
+      description: formValue.description!,
+      duration: Number(formValue.duration),
+      creationDate: formValue.creationDate!,
+      topRated: formValue.topRated || false,
+      authors: formValue.authors || [],
+    };
+
+    this.loadingService.show();
+
+    const request$ = this.isEditMode
+      ? this.coursesService.updateItem(this.course.id, courseToSave)
+      : this.coursesService.createCourse(courseToSave);
+
+    request$
       .pipe(
         finalize(() => this.loadingService.hide())
       )
@@ -85,8 +117,11 @@ export class CourseFormComponent implements OnInit {
     this.router.navigate(['/courses']);
   }
 
-  public onDateChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.course.creationDate = new Date(input.value);
+  public get durationControl(): FormControl {
+    return this.courseForm.get('duration') as FormControl;
+  }
+
+  public get authorsControl(): FormControl {
+    return this.courseForm.get('authors') as FormControl;
   }
 }
