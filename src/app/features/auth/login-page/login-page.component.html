@@ -27,6 +27,7 @@
           *ngIf="emailControl.invalid && (emailControl.touched || emailControl.dirty)"
         >
           <span *ngIf="emailControl.errors?.['required']">Пожалуйста, введите Email</span>
+          <span *ngIf="emailControl.errors?.['email']">Введите корректный email</span>
         </div>
       </div>
 
