@@ -18,16 +18,22 @@
   </div>
 
   <div class="courses-page__container">
-    <ng-container *ngIf="courses.length > 0; else noData">
-      <app-course-card
-        *ngFor="let course of courses; trackBy: trackById"
-        [course]="course"
-        (deleteCourse)="onDeleteCourse($event)"
-      ></app-course-card>
-      
-      <div *ngIf="loadMore" class="courses-page__button button" (click)="onLoadMore()">
-        Загрузить еще
-      </div>
+    <ng-container *ngIf="courses$ | async as courses">
+      <ng-container *ngIf="courses.length > 0; else noData">
+        <app-course-card
+          *ngFor="let course of courses; trackBy: trackById"
+          [course]="course"
+          (deleteCourse)="onDeleteCourse($event)"
+        ></app-course-card>
+        
+        <div 
+          *ngIf="loadMore$ | async" 
+          class="courses-page__button button" 
+          (click)="onLoadMore()"
+        >
+          Загрузить еще
+        </div>
+      </ng-container>
     </ng-container>
 
     <ng-template #noData>

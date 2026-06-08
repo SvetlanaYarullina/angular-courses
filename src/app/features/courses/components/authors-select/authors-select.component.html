@@ -6,6 +6,7 @@
   [suggestions]="filteredAuthors"
   [multiple]="true"
   [forceSelection]="true"
+  field="name"
   [scrollHeight]="'160px'"
   appendTo="body"
   (completeMethod)="filterAuthors($event)"
@@ -13,7 +14,7 @@
   (onUnselect)="onAuthorsChange()"
   (onBlur)="control.markAsTouched()"
 >
-  <ng-template let-author pTemplate="item">
+<ng-template let-author pTemplate="item">
     {{ getAuthorName(author) }}
   </ng-template>
 

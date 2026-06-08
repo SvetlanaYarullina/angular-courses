@@ -53,12 +53,16 @@
         </div>
       </div>
 
+      <div class="login__error" *ngIf="error$ | async as error">
+        {{ error }}
+      </div>
+
       <div class="login__footer">
         <a href="#" class="login__forgot-link">Забыли пароль?</a>
 
         <button 
           type="submit"
-          [disabled]="userForm.invalid"
+          [disabled]="userForm.invalid || (isLoading$ | async)"
           class="login__button button"
         >
           Войти
