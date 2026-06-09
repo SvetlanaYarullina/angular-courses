@@ -9,12 +9,7 @@ import { Course } from 'src/app/features/courses/models/course.model';
 })
 export class CourseCardComponent {
   @Input() course!: Course;
-  @Output() edit = new EventEmitter<Course>();
   @Output() deleteCourse = new EventEmitter<Course>();
-
-  public onEdit(): void {
-    this.edit.emit(this.course);
-  }
 
   public onDelete(): void {
     this.deleteCourse.emit(this.course);
