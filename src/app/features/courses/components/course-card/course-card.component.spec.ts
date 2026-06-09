@@ -1,23 +1,33 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { Course } from 'src/app/features/courses/models/course.model';
 import { CourseCardComponent } from './course-card.component';
 
-describe('CourseCardComponent', () => {
+describe('CourseCardComponent isolated', () => {
   let component: CourseCardComponent;
-  let fixture: ComponentFixture<CourseCardComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ CourseCardComponent ]
-    })
-    .compileComponents();
+  const course: Course = {
+    id: 1,
+    title: 'Test course',
+    description: 'Test description',
+    creationDate: new Date('2026-06-09'),
+    duration: 120,
+    topRated: false,
+    authors: [],
+  };
 
-    fixture = TestBed.createComponent(CourseCardComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  beforeEach(() => {
+    component = new CourseCardComponent();
+    component.course = course;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should emit course when onDelete is called', () => {
+    spyOn(component.deleteCourse, 'emit');
+
+    component.onDelete();
+
+    expect(component.deleteCourse.emit).toHaveBeenCalledOnceWith(course);
   });
 });
