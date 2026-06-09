@@ -30,11 +30,18 @@ export const coursesReducer = createReducer(
     CoursesActions.updateCourse,
     CoursesActions.deleteCourse,
     state => ({
-        ...state,
-        isLoading: true,
-        error: null,
+      ...state,
+      isLoading: true,
+      error: null,
     })
   ),
+
+  on(CoursesActions.loadCourse, state => ({
+    ...state,
+    selectedCourse: null,
+    isLoading: true,
+    error: null,
+  })),
 
   on(CoursesActions.loadCoursesSuccess, (state, { courses, reset, loadMore }) => ({
     ...state,
@@ -59,8 +66,9 @@ export const coursesReducer = createReducer(
     error: null,
   })),
 
-  on(CoursesActions.createCourseSuccess, state => ({
+  on(CoursesActions.createCourseSuccess, (state, { course }) => ({
     ...state,
+    courses: [course, ...state.courses],
     isLoading: false,
     error: null,
   })),
