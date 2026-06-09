@@ -1,15 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { User } from 'src/app/shared/models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly STORAGE_KEY = 'auth_user';
   private apiUrl = '/users';
-
-  private readonly _userLogin$ = new BehaviorSubject<string | null>(null);
-  public readonly userLogin$ = this._userLogin$.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -22,7 +19,6 @@ export class AuthService {
       map(users => {
         if (!users.length) {
           localStorage.removeItem(this.STORAGE_KEY);
-          this._userLogin$.next(null);
           return false;
         }
 
@@ -33,13 +29,10 @@ export class AuthService {
           token: user.fakeToken
         }));
 
-        this._userLogin$.next(user.email);
-
         return true;
       }),
       catchError(() => {
         localStorage.removeItem(this.STORAGE_KEY);
-        this._userLogin$.next(null);
         return of(false);
       })
     );
@@ -47,7 +40,6 @@ export class AuthService {
 
   public logout(): void {
     localStorage.removeItem(this.STORAGE_KEY);
-    this._userLogin$.next(null);
   }
 
   public isAuthenticated(): boolean {
@@ -57,14 +49,22 @@ export class AuthService {
   public getToken(): string | null {
     const data = localStorage.getItem(this.STORAGE_KEY);
 
-    return data ? JSON.parse(data).token : null;
+    if (!data) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(data).token ?? null;
+    } catch {
+      localStorage.removeItem(this.STORAGE_KEY);
+      return null;
+    }
   }
 
   public getUserInfo(): Observable<User | null> {
     const token = this.getToken();
 
     if (!token) {
-      this._userLogin$.next(null);
       return of(null);
     }
 
@@ -72,13 +72,7 @@ export class AuthService {
 
     return this.http.get<User[]>(this.apiUrl, { params }).pipe(
       map(users => users.length ? users[0] : null),
-      tap(user => {
-        this._userLogin$.next(user ? user.email : null);
-      }),
-      catchError(() => {
-        this._userLogin$.next(null);
-        return of(null);
-      })
+      catchError(() => of(null))
     );
   }
 }

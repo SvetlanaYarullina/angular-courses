@@ -1,10 +1,15 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Course } from 'src/app/features/courses/models/course.model';
-import { CoursesService } from '../../services/courses.service';
-import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { catchError, debounceTime, distinctUntilChanged, filter, finalize, map, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
-import { LoadingService } from 'src/app/core/services/loading.service';
+import { Store } from '@ngrx/store';
+import { debounceTime, distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
+import { State } from 'src/app/store';
+import { Course } from 'src/app/features/courses/models/course.model';
+import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import * as CoursesActions from 'src/app/store/courses/courses.actions';
+import {
+  selectCourses,
+  selectCoursesLoadMore
+} from 'src/app/store/courses/courses.selectors';
 
 @Component({
   selector: 'app-courses-page',
@@ -13,25 +18,21 @@ import { LoadingService } from 'src/app/core/services/loading.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoursesPageComponent implements OnInit, OnDestroy {
-  public courses: Course[] = [];
-  public loading = false;
-  public loadMore = true;
+  public courses$ = this.store.select(selectCourses);
+  public loadMore$ = this.store.select(selectCoursesLoadMore);
+
   public searchTerm = '';
 
-  private currentStart = 0;
-  private pageSize = 10;
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<string>();
 
   constructor(
-    private coursesService: CoursesService,
+    private store: Store<State>,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef,
-    private loadingService: LoadingService,
   ) {}
 
   ngOnInit(): void {
-    this.loadCourses();
+    this.store.dispatch(CoursesActions.loadCourses({ reset: true }));
     this.initSearch();
   }
 
@@ -41,57 +42,19 @@ export class CoursesPageComponent implements OnInit, OnDestroy {
         map(search => search.trim()),
         debounceTime(250),
         distinctUntilChanged(),
-        switchMap(search => {
-          this.currentStart = 0;
-
-          if (!search) {
-            this.loading = true;
-            this.loadMore = true;
-            this.loadingService.show();
-
-            return this.coursesService.getList(0, this.pageSize).pipe(
-              catchError(err => {
-                console.error('Ошибка загрузки курсов', err);
-                return of([]);
-              }),
-              finalize(() => {
-                this.loading = false;
-                this.loadingService.hide();
-                this.cdr.markForCheck();
-              })
-            );
-          }
-
-          if (search.length < 3) {
-            this.loadMore = false;
-            return of(null);
-          }
-
-          this.loading = true;
-          this.loadMore = false;
-          this.loadingService.show();
-
-          return this.coursesService.getList(0, 100, search).pipe(
-            catchError(err => {
-              console.error('Ошибка поиска курсов', err);
-              return of([]);
-            }),
-            finalize(() => {
-              this.loading = false;
-              this.loadingService.hide();
-              this.cdr.markForCheck();
-            })
-          );
-        }),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
-      .subscribe(courses => {
-        if (courses === null) {
+      .subscribe(search => {
+        if (!search) {
+          this.store.dispatch(CoursesActions.loadCourses({ reset: true }));
           return;
         }
 
-        this.courses = courses;
-        this.loadMore = !this.searchTerm.trim() && courses.length === this.pageSize;
+        if (search.length < 3) {
+          return;
+        }
+
+        this.store.dispatch(CoursesActions.searchCourses({ search }));
       });
   }
 
@@ -99,45 +62,8 @@ export class CoursesPageComponent implements OnInit, OnDestroy {
     this.searchSubject.next(search);
   }
 
-  public loadCourses(): void {
-    if (this.loading) {
-      return;
-    }
-
-    this.loading = true;
-    this.loadingService.show();
-
-    this.coursesService.getList(this.currentStart, this.pageSize)
-      .pipe(
-        takeUntil(this.destroy$),
-        catchError(err => {
-          console.error('Ошибка загрузки курсов', err);
-          return of([]);
-        }),
-        finalize(() => {
-          this.loading = false;
-          this.loadingService.hide();
-          this.cdr.markForCheck();
-        })
-      )
-      .subscribe(courses => {
-        if (this.currentStart === 0) {
-          this.courses = courses;
-        } else {
-          this.courses = [...this.courses, ...courses];
-        }
-
-        this.loadMore = courses.length === this.pageSize;
-      });
-  }
-
   public onLoadMore(): void {
-    if (!this.loadMore || this.loading) {
-      return;
-    }
-
-    this.currentStart += this.pageSize;
-    this.loadCourses();
+    this.store.dispatch(CoursesActions.loadCourses({ reset: false }));
   }
 
   public onDeleteCourse(course: Course): void {
@@ -153,31 +79,13 @@ export class CoursesPageComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.loadingService.show();
-
-        this.coursesService.removeItem(course.id)
-          .pipe(
-            takeUntil(this.destroy$),
-            catchError(err => {
-              console.error('Ошибка удаления курса', err);
-              return of(null);
-            }),
-            finalize(() => {
-              this.loadingService.hide();
-              this.cdr.markForCheck();
-            })
-          )
-          .subscribe(() => {
-            this.currentStart = 0;
-            this.loadCourses();
-          });
+        this.store.dispatch(CoursesActions.deleteCourse({ id: course.id }));
       });
   }
 
   public resetFilters(): void {
     this.searchTerm = '';
-    this.currentStart = 0;
-    this.loadCourses();
+    this.store.dispatch(CoursesActions.loadCourses({ reset: true }));
   }
 
   public trackById(index: number, course: Course): number {

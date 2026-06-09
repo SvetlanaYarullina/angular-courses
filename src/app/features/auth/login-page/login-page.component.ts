@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
-import { AuthService } from 'src/app/core/services/auth.service';
-import { LoadingService } from 'src/app/core/services/loading.service';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/store';
+import * as AuthActions from 'src/app/store/auth/auth.actions';
+import { selectAuthError, selectAuthLoading } from 'src/app/store/auth/auth.selectors';
 
 @Component({
   selector: 'app-login-page',
@@ -12,10 +12,11 @@ import { LoadingService } from 'src/app/core/services/loading.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
+  public readonly isLoading$ = this.store.select(selectAuthLoading);
+  public readonly error$ = this.store.select(selectAuthError);
+
   constructor(
-    private authService: AuthService,
-    private router: Router,
-    private loadingService: LoadingService,
+    private store: Store<State>,
   ) {}
 
   public onSubmit(form: NgForm): void {
@@ -25,16 +26,6 @@ export class LoginPageComponent {
 
     const { email, password } = form.value;
 
-    this.loadingService.show();
-
-    this.authService.login(email, password)
-      .pipe(
-        finalize(() => this.loadingService.hide())
-      )
-      .subscribe(success => {
-        if (success) {
-          this.router.navigate(['/courses']);
-        }
-      });
+    this.store.dispatch(AuthActions.login({ email, password }));
   }
 }

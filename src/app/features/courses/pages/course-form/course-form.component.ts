@@ -1,34 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CoursesService } from '../../services/courses.service';
 import { Author, Course } from '../../models/course.model';
-import { finalize } from 'rxjs';
-import { LoadingService } from 'src/app/core/services/loading.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { Subject, takeUntil } from 'rxjs';
+import { State } from 'src/app/store';
+import * as CoursesActions from 'src/app/store/courses/courses.actions';
+import { selectSelectedCourse } from 'src/app/store/courses/courses.selectors';
 
 @Component({
   selector: 'app-course-form',
   templateUrl: './course-form.component.html',
   styleUrls: ['./course-form.component.scss'],
 })
-export class CourseFormComponent implements OnInit {
-  course: Course = {
-    id: 0,
-    title: '',
-    description: '',
-    duration: 0,
-    creationDate: new Date(),
-    topRated: false,
-  };
+export class CourseFormComponent implements OnInit, OnDestroy {
+  public isEditMode = false;
+  public courseTitle = 'Новый курс';
 
-  isEditMode = false;
+  private courseId: number | null = null;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
-    private coursesService: CoursesService,
     private router: Router,
-    private loadingService: LoadingService,
     private fb: FormBuilder,
+    private store: Store<State>,
   ) {}
 
   ngOnInit(): void {
@@ -39,28 +35,29 @@ export class CourseFormComponent implements OnInit {
     }
 
     this.isEditMode = true;
-    this.loadingService.show();
+    this.courseId = +id;
 
-    this.coursesService.getItemById(+id)
-    .pipe(
-    finalize(() => this.loadingService.hide())
-    )
-    .subscribe({
-      next: loadedCourse => {
-        this.course = { ...loadedCourse };
-        
+    this.store.dispatch(CoursesActions.loadCourse({ id: this.courseId }));
+
+    this.store.select(selectSelectedCourse)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(course => {
+        if (!course) {
+          return;
+        }
+
+        this.courseTitle = course.title;
+
         this.courseForm.patchValue({
-          title: loadedCourse.title,
-          description: loadedCourse.description,
-          duration: loadedCourse.duration,
-          creationDate: new Date(loadedCourse.creationDate),
-          authors: loadedCourse.authors || [],
-          topRated: loadedCourse.topRated,
+          title: course.title,
+          description: course.description,
+          duration: course.duration,
+          creationDate: new Date(course.creationDate),
+          authors: course.authors || [],
+          topRated: course.topRated,
         });
-      },
-      error: () => this.router.navigate(['/courses'])
-    });
-    }
+      });
+  }
 
   public courseForm = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(50)]],
@@ -97,20 +94,18 @@ export class CourseFormComponent implements OnInit {
       authors: formValue.authors || [],
     };
 
-    this.loadingService.show();
+    if (this.isEditMode && this.courseId) {
+      this.store.dispatch(CoursesActions.updateCourse({
+        id: this.courseId,
+        course: courseToSave,
+      }));
 
-    const request$ = this.isEditMode
-      ? this.coursesService.updateItem(this.course.id, courseToSave)
-      : this.coursesService.createCourse(courseToSave);
+      return;
+    }
 
-    request$
-      .pipe(
-        finalize(() => this.loadingService.hide())
-      )
-      .subscribe({
-        next: () => this.router.navigate(['/courses']),
-        error: err => console.error('Ошибка сохранения курса', err),
-      });
+    this.store.dispatch(CoursesActions.createCourse({
+      course: courseToSave,
+    }));
   }
 
   public onCancel(): void {
@@ -123,5 +118,10 @@ export class CourseFormComponent implements OnInit {
 
   public get authorsControl(): FormControl {
     return this.courseForm.get('authors') as FormControl;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

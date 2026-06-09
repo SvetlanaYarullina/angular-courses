@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/store';
+import * as AuthActions from 'src/app/store/auth/auth.actions';
+import { selectUserLogin } from 'src/app/store/auth/auth.selectors';
 
 @Component({
   selector: 'app-header',
@@ -8,23 +10,17 @@ import { Router } from '@angular/router';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  public userLogin$ = this.authService.userLogin$;
+  public readonly userLogin$ = this.store.select(selectUserLogin);
 
   constructor(
-    private authService: AuthService,
-    private router: Router
+    private store: Store<State>,
   ) {}
 
   ngOnInit(): void {
-    this.authService.getUserInfo().subscribe();
-  }
-
-  public isAuthenticated(): boolean {
-    return this.authService.isAuthenticated();
+    this.store.dispatch(AuthActions.loadUserInfo());
   }
 
   public onLogout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.store.dispatch(AuthActions.logout());
   }
 }
